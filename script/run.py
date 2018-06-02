@@ -1,7 +1,6 @@
 import argparse
 import os.path
 import rnn
-import skipgram
 import util
 
 
