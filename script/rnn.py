@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 class Config:
-    state_size = 1500 # mean of input size and output size?
+    state_size = 200 # mean of input size and output size?
     n_layers = 1
     seq_len = 10
     batch_size = 400
@@ -203,6 +203,8 @@ def do_train(country_code,embed_path, helper, data_raw, epochs, resume_training=
             model.fit(sess,saver,data_raw,epochs)
 
 def generate_w_random_search(country_code,embed_path,helper,word_id,word, word_in_vocab, n_sents,top_n):
+    if not os.path.exists('output'):
+        os.makedirs('output')
     config = Config(helper.tok2id,country_code)
     with tf.Graph().as_default():
         model = RNNModel(config,embed_path)

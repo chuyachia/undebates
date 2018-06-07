@@ -91,27 +91,7 @@ def process_glove(glove_dim, glove_dir, helper, save_path, size=4e5):
         np.savez_compressed(com_dict_save_path,dictionary = com_dict)
 
 
-def get_random_context(data,batch_size,windows_size,number_skip):
-    center = []
-    target = []
-    for _ in range(batch_size//number_skip):
-        sent = data[np.random.randint(0,len(data))] # pick a sentence
-        while windows_size>=len(sent)-windows_size:
-            sent = data[np.random.randint(0,len(data))] 
-        exclude_indx = []
-        center_indx = np.random.randint(windows_size,len(sent)-windows_size) # pick a center word that allows full window
-        for _ in range(number_skip):
-            span = list(range(center_indx-windows_size,center_indx+windows_size+1))
-            exclude_indx.append(center_indx)
-            target_indx = center_indx
-            while target_indx in exclude_indx:
-                target_indx = np.random.choice(span)                
-            center.append(sent[center_indx])
-            target.append(sent[target_indx])			
-    center = np.array(center)
-    target = np.reshape(np.array(target),(-1,1))
-    return center,target
-	
+
 def get_batches(inputs,labels, seq_len):
     assert inputs.shape == labels.shape
     num_batches = inputs.shape[1]//seq_len
@@ -122,19 +102,6 @@ def get_batches(inputs,labels, seq_len):
         labels_batch = labels[:,start_indx:end_indx]
         yield inputs_batch,labels_batch
 
-def choose_words(n,probs):
-    p = np.squeeze(probs) 
-    p[np.argsort(p)[:-n]] = 0 
-    p = p / np.sum(p) 
-    return np.random.choice(len(p), 1, p=p)[0]
-
-def top_n_word(n,probs): # need to modify, no more UNK
-    probs = np.squeeze(probs)
-    top_indx= np.argsort(probs)[-n:]
-    if 0 in top_indx: # token 0 = 'UNK'
-        top_indx[np.where(top_indx ==0)] =  np.argsort(probs)[-(n+1)]
-    top_prob = probs[top_indx]    
-    return top_indx, top_prob 
 
 if __name__ =='__main__':
         country_code = 'FRA'
