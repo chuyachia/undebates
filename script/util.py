@@ -104,7 +104,7 @@ def get_batches(inputs,labels, seq_len):
 
 
 if __name__ =='__main__':
-        country_code = 'FRA'
+        country_code = 'USA'
         helper, data = load_and_preprocess_data('input/un-general-debates.csv','script/data',country_code)
         embed_path = 'script/embed/{}'.format(country_code)
         if not os.path.exists(embed_path):
